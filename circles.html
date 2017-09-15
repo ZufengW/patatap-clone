@@ -5,12 +5,13 @@
     <!-- Load the Paper.js library -->
     <script type="text/javascript" src="js/paper-full.min.js"></script>
     <link rel="stylesheet" href="css/circles.css" type="text/css" />
+    
     <!-- Define inlined PaperScript associate it with myCanvas -->
     <script type="text/paperscript" canvas="myCanvas">
     	// Create a Paper.js Path to draw a line into it:
     	var path = new Path();
     	// Give the stroke a color
-    	path.strokeColor = 'black';
+    	path.strokeColor = 'red';
     	var start = new Point(100, 100);
     	// Move to start and draw a line from there
     	path.moveTo(start);
@@ -18,11 +19,17 @@
     	// PaperScript does that for us, and much more!
     	path.lineTo(start + [ 100, -50 ]);
     	
-    	// More experimentation
-    	var myCircle = new Path.Circle(new Point(100, 70), 50);
-        myCircle.fillColor = 'blue';
-        var myCircle2 = new Path.Circle(new Point(300, 70), 31);
-        myCircle2.fillColor = 'brown';
+    
+        // Generate a grid of coloured circles
+        circleGrid = [];
+        for (var i=10; i<window.innerWidth; i+=100){
+            for (var j=10; j < window.innerHeight; j+=100){
+                var newCircle = new Path.Circle(new Point(i, j), 10); 
+                newCircle.fillColor = new Color(i/window.innerWidth, j/window.innerHeight, 0);
+                circleGrid.push(newCircle);
+            }
+        }
+        
     </script>
 </head>
 <body>
