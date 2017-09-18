@@ -1,66 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Circles</title>     
-    <!-- Load the Paper.js library -->
-    <script type="text/javascript" src="js/paper-full.min.js"></script>
-    <link rel="stylesheet" href="css/circles.css" type="text/css" />
-    
-    
-    <!-- Define inlined PaperScript associate it with myCanvas -->
-    <script type="text/paperscript" canvas="myCanvas">
-    	// Create a Paper.js Path to draw a line into it:
-    	var path = new Path();
-    	// Give the stroke a color
-    	path.strokeColor = 'red';
-    	var start = new Point(100, 100);
-    	// Move to start and draw a line from there
-    	path.moveTo(start);
-    	// Note the plus operator on Point objects.
-    	// PaperScript does that for us, and much more!
-    	path.lineTo(start + [ 100, -50 ]);
-    	
-    
-        // Generate a grid of coloured circles
-        circleGrid = [];
-        for (var i=10; i<window.innerWidth; i+=100){
-            for (var j=10; j < window.innerHeight; j+=100){
-                var newCircle = new Path.Circle(new Point(i, j), 10); 
-                newCircle.fillColor = new Color(i/window.innerWidth, j/window.innerHeight, 0);
-                circleGrid.push(newCircle);
-            }
-        }
-        
-        tempCircles = [];
-        
-        function onKeyDown(event) {
-        	// When a key is pressed, add a circle to a random coordinate
-        	//text.content = 'The ' + event.key + ' key was pressed!';
-        	var point = Point.random() * new Point(view.size.width, view.size.height);
-        	var newCircle = new Path.Circle(point, 300);
-        	newCircle.fillColor = "red";
-        	
-        	tempCircles.push(newCircle); 
-        }
-        
-        function onFrame(event) {
-        	// Each frame, change the fill color of the path slightly by
-        	// adding 1 to its hue:
-        	for (var i=0; i< circleGrid.length; i++){
-        	    circleGrid[i].fillColor.hue += 1;
-        	}
-        	
-        	// make tempCircles shrink and change in hue
-        	tempCircles.forEach(function(el){
-        	   el.fillColor.hue += 1;
-        	   el.scale(0.9);
-        	}); 
-        	
-        }
-        
-    </script>
+	<title>Circles</title>
+	<!-- Load the Paper.js library -->
+	<script type="text/javascript" src="js/paper-full.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.core.min.js"></script>
+	<link rel="stylesheet" href="css/circles.css" type="text/css" />
+	
+	
+	<!-- Define inlined PaperScript associate it with myCanvas -->
+	<script type="text/paperscript" canvas="myCanvas">
+	
+		// Generate a grid of coloured circles
+		circleGrid = [];
+		for (var i=10; i<window.innerWidth; i+=100){
+			for (var j=10; j < window.innerHeight; j+=100){
+				var newCircle = new Path.Circle(new Point(i, j), 10); 
+				newCircle.fillColor = new Color(i/window.innerWidth, j/window.innerHeight, 0);
+				circleGrid.push(newCircle);
+			}
+		}
+		
+		var defaultSound = new Howl({
+			src: ['sounds/splits.mp3']
+		});
+		
+		var keyData = {
+			a: {
+				color: "purple",
+				sound: new Howl({
+					src: ['sounds/bubbles.mp3']
+				})
+			},
+			s: {
+				color: "green",
+				sound: new Howl({
+					src: ['sounds/clay.mp3']
+				})
+			}
+		};
+		
+		
+		// this array stores all the circles that are generated on key press
+		var tempCircles = [];
+		
+	
+		
+		function onKeyDown(event) {
+			// When a key is pressed, add a circle to a random coordinate
+			//text.content = 'The ' + event.key + ' key was pressed!';
+			var point = Point.random() * new Point(view.size.width, view.size.height);
+			var newCircle = new Path.Circle(point, 300);
+			newCircle.fillColor = "red";
+			
+			 
+			
+			if (keyData.hasOwnProperty(event.key)){
+					keyData[event.key].sound.play();
+					newCircle.fillColor = keyData[event.key].color;
+					
+			}else{
+					defaultSound.play(); // if any other key, play the default sound 
+			}
+			
+			tempCircles.push(newCircle);
+			
+		}
+		
+		function onFrame(event) {
+			// Each frame, change the fill color of the path slightly by
+			// adding 1 to its hue:
+			for (var i=0; i< circleGrid.length; i++){
+					circleGrid[i].fillColor.hue += 1;
+			}
+			
+			// make tempCircles shrink and change in hue
+			tempCircles.forEach(function(el){
+				 el.fillColor.hue += 1;
+				 el.scale(0.9);
+			}); 
+			
+		}
+		
+		
+		
+	</script>
 </head>
 <body>
-    <canvas id="myCanvas" resize></canvas>
+	<canvas id="myCanvas" resize></canvas>
 </body>
 </html>
