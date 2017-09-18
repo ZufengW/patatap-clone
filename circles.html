@@ -6,6 +6,7 @@
     <script type="text/javascript" src="js/paper-full.min.js"></script>
     <link rel="stylesheet" href="css/circles.css" type="text/css" />
     
+    
     <!-- Define inlined PaperScript associate it with myCanvas -->
     <script type="text/paperscript" canvas="myCanvas">
     	// Create a Paper.js Path to draw a line into it:
@@ -28,6 +29,33 @@
                 newCircle.fillColor = new Color(i/window.innerWidth, j/window.innerHeight, 0);
                 circleGrid.push(newCircle);
             }
+        }
+        
+        tempCircles = [];
+        
+        function onKeyDown(event) {
+        	// When a key is pressed, add a circle to a random coordinate
+        	//text.content = 'The ' + event.key + ' key was pressed!';
+        	var point = Point.random() * new Point(view.size.width, view.size.height);
+        	var newCircle = new Path.Circle(point, 300);
+        	newCircle.fillColor = "red";
+        	
+        	tempCircles.push(newCircle); 
+        }
+        
+        function onFrame(event) {
+        	// Each frame, change the fill color of the path slightly by
+        	// adding 1 to its hue:
+        	for (var i=0; i< circleGrid.length; i++){
+        	    circleGrid[i].fillColor.hue += 1;
+        	}
+        	
+        	// make tempCircles shrink and change in hue
+        	tempCircles.forEach(function(el){
+        	   el.fillColor.hue += 1;
+        	   el.scale(0.9);
+        	}); 
+        	
         }
         
     </script>
